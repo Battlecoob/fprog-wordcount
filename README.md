@@ -6,8 +6,18 @@ To run this program on Windows Subsystem for Linux (WSL) 2, you will need to hav
 
 Open a terminal in WSL 2 and install the .NET runtime by running the following command:
 
-1. sudo apt-get update
-2. sudo apt-get install dotnet-runtime-3.1
+1. update
+
+``` bash
+sudo apt-get update
+```
+
+2. install dotnet
+
+``` bash
+sudo apt-get install dotnet-runtime-3.1
+```
+
 3. Install a C# compiler, such as mono, by running the following command:
 
 ``` bash
