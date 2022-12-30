@@ -14,6 +14,7 @@ sudo apt-get install dotnet-runtime-3.1
 Install a C# compiler, such as mono, by running the following command:
 
 sudo apt-get install mono-devel
+
 -----------------------------------------------------------------------------------------
 
 Clone repository and navigate to it
