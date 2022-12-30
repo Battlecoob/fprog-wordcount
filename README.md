@@ -2,9 +2,7 @@
 
 To run this program on Windows Subsystem for Linux (WSL) 2, you will need to have the .NET runtime and a C# compiler installed on your WSL 2 instance. Here are the steps you can follow to run the program on WSL 2:
 
----
 ## If needed
----
 
 Open a terminal in WSL 2 and install the .NET runtime by running the following command:
 
@@ -16,9 +14,7 @@ Open a terminal in WSL 2 and install the .NET runtime by running the following c
 sudo apt-get install mono-devel
 ```
 
----
 ## Execution
----
 
 * Clone repository and navigate to it
 * Build the project:
