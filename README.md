@@ -36,7 +36,7 @@ dotnet build
 * Run the program by specifying the directory path and file extension as command line arguments:
 
 ``` bash
-dotnet run /path/to/directory .file-extenstion
+dotnet run /path/to/directory .file-extension
 ```
 
 This will execute the program and print the results to the terminal.
