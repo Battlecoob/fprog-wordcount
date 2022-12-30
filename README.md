@@ -15,7 +15,7 @@ sudo apt-get update
 2. install dotnet
 
 ``` bash
-sudo apt-get install dotnet-runtime-3.1
+sudo apt-get install -y dotnet-sdk-6.0
 ```
 
 3. Install a C# compiler, such as mono, by running the following command:
