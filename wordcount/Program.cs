@@ -58,21 +58,24 @@ namespace WordCount
         static void Main(string[] args)
         {
             // Check if there are enough command line arguments
-            if (args.Length < 2)
+            
+            if (args.Length != 2)
             {
-                //Console.WriteLine("Error: Please provide a directory path and file extension.");
                 PrintUsage();
                 return;
             }
+            
 
             // Get the directory path and file extension from the command line arguments
-            string directoryPath = args[0];
-            string fileExtension = args[1];
+            //string directoryPath = args[0];
+            //string fileExtension = args[1];
+
+            string directoryPath = "/Users/fabian/My Drive/Studium/compSci_Dual/5_Sem/FPROG/Wordcount-Projekt/fprog-wordcount/wordlists";
+            string fileExtension = ".txt";
             
             // Check if the directory exists
             if (!Directory.Exists(directoryPath))
             {
-                //Console.WriteLine($"Error: The directory '{directoryPath}' does not exist.");
                 DirectoryError(directoryPath);
                 return;
             }
@@ -82,7 +85,6 @@ namespace WordCount
             {
                 //Console.WriteLine($"Error: '{fileExtension}' is not a valid file extension. It should start with a '.' character.");
                 fileExtension = "." + fileExtension; // maybe not functional
-                return;
             }
 
             // Use a higher-order function to enumerate all the files in the directory that match the file extension
@@ -91,9 +93,10 @@ namespace WordCount
             try
             {
                 wordLists = Directory
-                    .EnumerateFiles(directoryPath, fileExtension, SearchOption.AllDirectories)
+                    .EnumerateFiles(directoryPath, "*" + fileExtension, SearchOption.AllDirectories)
                     .Select(File.ReadAllText)
                     .Select(GetWords);
+            
             }
             catch (UnauthorizedAccessException)
             {
@@ -105,6 +108,11 @@ namespace WordCount
                 Console.WriteLine("Error: An I/O error occurred.");
                 return;
             }
+            catch
+            {
+                Console.WriteLine("An unknown error occured.");
+                return;
+            }
 
             // Flatten the list of lists of words into a single list of words
             IEnumerable<string> words = wordLists.SelectMany(list => list);
@@ -112,6 +120,8 @@ namespace WordCount
             // Use a higher-order function to count the words and sort them by frequency
             IEnumerable<(string Word, int Count)> wordCounts = CountWords(words)
                 .OrderByDescending(pair => pair.Count);
+
+            Console.WriteLine("..");
 
             // Print the word counts
             PrintWordCounts(wordCounts);
