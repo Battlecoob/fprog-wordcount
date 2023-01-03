@@ -44,12 +44,24 @@ namespace WordCount
             }
         }
 
+        static void PrintUsage()
+        {
+            Console.WriteLine("Error: Please provide a directory path and file extension.");
+            Console.WriteLine("Usage: dotnet run /path/to/directory .file-extension");
+        }
+
+        static void DirectoryError(string directoryPath)
+        {
+            Console.WriteLine($"Error: The directory '{directoryPath}' does not exist.");
+        }
+
         static void Main(string[] args)
         {
             // Check if there are enough command line arguments
             if (args.Length < 2)
             {
-                Console.WriteLine("Error: Please provide a directory path and file extension.");
+                //Console.WriteLine("Error: Please provide a directory path and file extension.");
+                PrintUsage();
                 return;
             }
 
@@ -60,14 +72,16 @@ namespace WordCount
             // Check if the directory exists
             if (!Directory.Exists(directoryPath))
             {
-                Console.WriteLine($"Error: The directory '{directoryPath}' does not exist.");
+                //Console.WriteLine($"Error: The directory '{directoryPath}' does not exist.");
+                DirectoryError(directoryPath);
                 return;
             }
 
             // Check if the file extension is valid
             if (!fileExtension.StartsWith("."))
             {
-                Console.WriteLine($"Error: '{fileExtension}' is not a valid file extension. It should start with a '.' character.");
+                //Console.WriteLine($"Error: '{fileExtension}' is not a valid file extension. It should start with a '.' character.");
+                fileExtension = "." + fileExtension; // maybe not functional
                 return;
             }
 
