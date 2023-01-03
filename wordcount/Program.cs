@@ -56,13 +56,41 @@ namespace WordCount
             // Get the directory path and file extension from the command line arguments
             string directoryPath = args[0];
             string fileExtension = args[1];
+            
+            // Check if the directory exists
+            if (!Directory.Exists(directoryPath))
+            {
+                Console.WriteLine($"Error: The directory '{directoryPath}' does not exist.");
+                return;
+            }
+
+            // Check if the file extension is valid
+            if (!fileExtension.StartsWith("."))
+            {
+                Console.WriteLine($"Error: '{fileExtension}' is not a valid file extension. It should start with a '.' character.");
+                return;
+            }
 
             // Use a higher-order function to enumerate all the files in the directory that match the file extension
             // and read their contents, resulting in a list of lists of words
-            IEnumerable<IEnumerable<string>> wordLists = Directory
-                .EnumerateFiles(directoryPath, "*" + fileExtension, SearchOption.AllDirectories)
-                .Select(File.ReadAllText)
-                .Select(GetWords);
+            IEnumerable<IEnumerable<string>> wordLists;
+            try
+            {
+                wordLists = Directory
+                    .EnumerateFiles(directoryPath, fileExtension, SearchOption.AllDirectories)
+                    .Select(File.ReadAllText)
+                    .Select(GetWords);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                Console.WriteLine("Error: Access to the directory is denied.");
+                return;
+            }
+            catch (IOException)
+            {
+                Console.WriteLine("Error: An I/O error occurred.");
+                return;
+            }
 
             // Flatten the list of lists of words into a single list of words
             IEnumerable<string> words = wordLists.SelectMany(list => list);
