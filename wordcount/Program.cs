@@ -17,6 +17,15 @@ namespace WordCount
 
         // This function is pure because it does not have any side effects and always returns the same
         // result for the same input. It also does not depend on any external state.
+        static string ReplaceSymbols(string text)
+        {
+            // Use a regular expression to replace all non-word and non-number characters with spaces
+            Regex regex = new Regex(@"[^a-zA-Z0-9]");
+            return regex.Replace(text, " ");
+        }
+        
+        // This function is pure because it does not have any side effects and always returns the same
+        // result for the same input. It also does not depend on any external state.
         static IEnumerable<string> GetWords(string text)
         {
             // Use a regular expression to only include words and numbers in the output
@@ -95,6 +104,7 @@ namespace WordCount
                 wordLists = Directory
                     .EnumerateFiles(directoryPath, "*" + fileExtension, SearchOption.AllDirectories)
                     .Select(File.ReadAllText)
+                    .Select(ReplaceSymbols)
                     .Select(GetWords);
             
             }
