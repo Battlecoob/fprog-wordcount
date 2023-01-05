@@ -12,7 +12,7 @@ namespace WordCount
         // result for the same input. It also does not depend on any external state.
         static IEnumerable<string> GetWordsOther(string text)
         {
-            return text.Split(' ');
+            return text.Split(" ");
         }
 
         // This function is pure because it does not have any side effects and always returns the same
@@ -23,7 +23,7 @@ namespace WordCount
             Regex regex = new Regex(@"[^a-zA-Z0-9]");
             return regex.Replace(text, " ");
         }
-        
+
         // This function is pure because it does not have any side effects and always returns the same
         // result for the same input. It also does not depend on any external state.
         static IEnumerable<string> GetWords(string text)
@@ -52,6 +52,11 @@ namespace WordCount
                 Console.WriteLine($"{word} -> {count}");
             }
         }
+		
+		static void DirectoryError(string directoryPath)
+        {
+            Console.WriteLine($"Error: The directory '{directoryPath}' does not exist.");
+        }
 
         static void PrintUsage()
         {
@@ -59,29 +64,19 @@ namespace WordCount
             Console.WriteLine("Usage: dotnet run /path/to/directory .file-extension");
         }
 
-        static void DirectoryError(string directoryPath)
-        {
-            Console.WriteLine($"Error: The directory '{directoryPath}' does not exist.");
-        }
-
         static void Main(string[] args)
         {
             // Check if there are enough command line arguments
-            
             if (args.Length != 2)
             {
                 PrintUsage();
                 return;
             }
-            
 
             // Get the directory path and file extension from the command line arguments
-            //string directoryPath = args[0];
-            //string fileExtension = args[1];
+            string directoryPath = args[0];
+            string fileExtension = args[1];
 
-            string directoryPath = "/Users/fabian/My Drive/Studium/compSci_Dual/5_Sem/FPROG/Wordcount-Projekt/fprog-wordcount/wordlists";
-            string fileExtension = ".txt";
-            
             // Check if the directory exists
             if (!Directory.Exists(directoryPath))
             {
@@ -90,11 +85,16 @@ namespace WordCount
             }
 
             // Check if the file extension is valid
-            if (!fileExtension.StartsWith("."))
-            {
-                //Console.WriteLine($"Error: '{fileExtension}' is not a valid file extension. It should start with a '.' character.");
-                fileExtension = "." + fileExtension; // maybe not functional
-            }
+            //if (!fileExtension.StartsWith("."))
+            //{
+            //    //Console.WriteLine($"Error: '{fileExtension}' is not a valid file extension. It should start with a '.' character.");
+            //    fileExtension = "." + fileExtension; // maybe not functional
+            //}
+
+            /*
+            @TODO:
+                check if fileExtension == .txt or other and execute code (maybe write functions for this or do it here underneath?) 
+            */
 
             // Use a higher-order function to enumerate all the files in the directory that match the file extension
             // and read their contents, resulting in a list of lists of words
@@ -106,7 +106,6 @@ namespace WordCount
                     .Select(File.ReadAllText)
                     .Select(ReplaceSymbols)
                     .Select(GetWords);
-            
             }
             catch (UnauthorizedAccessException)
             {
@@ -130,8 +129,6 @@ namespace WordCount
             // Use a higher-order function to count the words and sort them by frequency
             IEnumerable<(string Word, int Count)> wordCounts = CountWords(words)
                 .OrderByDescending(pair => pair.Count);
-
-            Console.WriteLine("..");
 
             // Print the word counts
             PrintWordCounts(wordCounts);
