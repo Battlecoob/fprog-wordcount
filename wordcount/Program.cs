@@ -52,16 +52,10 @@ namespace WordCount
                 Console.WriteLine($"{word} -> {count}");
             }
         }
-		
-		static void DirectoryError(string directoryPath)
+
+        static void DirectoryError(string directoryPath)
         {
             Console.WriteLine($"Error: The directory '{directoryPath}' does not exist.");
-        }
-
-        static void PrintUsage()
-        {
-            Console.WriteLine("Error: Please provide a directory path and file extension.");
-            Console.WriteLine("Usage: dotnet run /path/to/directory .file-extension");
         }
 
         static void Main(string[] args)
@@ -69,13 +63,16 @@ namespace WordCount
             // Check if there are enough command line arguments
             if (args.Length != 2)
             {
-                PrintUsage();
+                Console.WriteLine("Error: Please provide a directory path and file extension.");
                 return;
             }
 
             // Get the directory path and file extension from the command line arguments
             string directoryPath = args[0];
             string fileExtension = args[1];
+
+            //string directoryPath = "C:\\Users\\Anwender\\Documents\\_fh_technikum\\fprog-wordcount\\wordlists";
+            //string fileExtension = ".txt";
 
             // Check if the directory exists
             if (!Directory.Exists(directoryPath))
@@ -84,44 +81,27 @@ namespace WordCount
                 return;
             }
 
-            // Check if the file extension is valid
-            //if (!fileExtension.StartsWith("."))
-            //{
-            //    //Console.WriteLine($"Error: '{fileExtension}' is not a valid file extension. It should start with a '.' character.");
-            //    fileExtension = "." + fileExtension; // maybe not functional
-            //}
-
-            /*
-            @TODO:
-                check if fileExtension == .txt or other and execute code (maybe write functions for this or do it here underneath?) 
-            */
+            //bool isText = fileExtension == ".txt" ? true : false;
 
             // Use a higher-order function to enumerate all the files in the directory that match the file extension
             // and read their contents, resulting in a list of lists of words
             IEnumerable<IEnumerable<string>> wordLists;
-            try
-            {
+
+            //if(isText)
+            //{
                 wordLists = Directory
                     .EnumerateFiles(directoryPath, "*" + fileExtension, SearchOption.AllDirectories)
                     .Select(File.ReadAllText)
                     .Select(ReplaceSymbols)
                     .Select(GetWords);
-            }
-            catch (UnauthorizedAccessException)
-            {
-                Console.WriteLine("Error: Access to the directory is denied.");
-                return;
-            }
-            catch (IOException)
-            {
-                Console.WriteLine("Error: An I/O error occurred.");
-                return;
-            }
-            catch
-            {
-                Console.WriteLine("An unknown error occured.");
-                return;
-            }
+            //}
+            //else
+            //{
+            //    wordLists = Directory
+            //        .EnumerateFiles(directoryPath, "*" + fileExtension, SearchOption.AllDirectories)
+            //        .Select(File.ReadAllText)
+            //        .Select(GetWordsOther);
+            //}
 
             // Flatten the list of lists of words into a single list of words
             IEnumerable<string> words = wordLists.SelectMany(list => list);
