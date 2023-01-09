@@ -3,11 +3,26 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Collections.Immutable;
 
 namespace WordCount
 {
     class Program
     {
+        /*
+         * 
+         * Functional Concepts:
+         *      Purity                  ... our functions are pure bc they do not have any side effects and always returns the same
+         *                                      result for the same input
+         *      Immutability            ... IEnumerable<T> are readonly
+         *                                  functions param / variable don't change but aren't immutable
+         *      Higher-Order Functions  ... wordLists
+         *                                  wordCounts  
+         *      Side-effects            ... limited as much as possible
+         *                                  besides "fileextension" no variable is changed / reused; that is done for errorhandling
+         *      Lamda                   ... used throughout the program                
+         */
+
         // This function is pure because it does not have any side effects and always returns the same
         // result for the same input. It also does not depend on any external state.
         static IEnumerable<string> GetWordsOther(string text)
@@ -30,13 +45,12 @@ namespace WordCount
         {
             // Use a regular expression to only include words and numbers in the output
             Regex regex = new Regex(@"\b[\w\d]+\b");
-
             return regex.Matches(text).Cast<Match>().Select(match => match.Value);
         }
 
         // This function is pure because it does not have any side effects and always returns the same
         // result for the same input. It also does not depend on any external state.
-        static IEnumerable<(string Word, int Count)> CountWords(IEnumerable<string> words)
+        static IEnumerable<(string Word, int Count)> CountWords(in IEnumerable<string> words)
         {
             return words
                 .GroupBy(word => word)
@@ -45,7 +59,7 @@ namespace WordCount
 
         // This function is pure because it does not have any side effects and always returns the same
         // result for the same input. It also does not depend on any external state.
-        static void PrintWordCounts(IEnumerable<(string Word, int Count)> wordCounts)
+        static void PrintWordCounts(in IEnumerable<(string Word, int Count)> wordCounts)
         {
             foreach ((string word, int count) in wordCounts.OrderByDescending(pair => pair.Count))
             {
@@ -53,17 +67,17 @@ namespace WordCount
             }
         }
 
-        static void DirectoryError(string directoryPath)
+        static void DirectoryError(in string directoryPath)
         {
             Console.WriteLine($"Error: The directory '{directoryPath}' does not exist.");
         }
 
         static void Main(string[] args)
         {
-            // Check if there are enough command line arguments
+            // Check if there are the right amount of command line arguments
             if (args.Length != 2)
             {
-                Console.WriteLine("Error: Please provide a directory path and file extension.");
+                Console.WriteLine("Error: Please provide a directory path and file extension."); // not functional?
                 return;
             }
 
@@ -71,14 +85,18 @@ namespace WordCount
             string directoryPath = args[0];
             string fileExtension = args[1];
 
-            //string directoryPath = "C:\\Users\\Anwender\\Documents\\_fh_technikum\\fprog-wordcount\\wordlists";
-            //string fileExtension = ".txt";
 
             // Check if the directory exists
             if (!Directory.Exists(directoryPath))
             {
                 DirectoryError(directoryPath);
                 return;
+            }
+
+            // Check if the fileextension starts with "."
+            if (!fileExtension.StartsWith("."))
+            {
+                fileExtension = "." + fileExtension;
             }
 
             //bool isText = fileExtension == ".txt" ? true : false;
@@ -89,11 +107,11 @@ namespace WordCount
 
             //if(isText)
             //{
-                wordLists = Directory
-                    .EnumerateFiles(directoryPath, "*" + fileExtension, SearchOption.AllDirectories)
-                    .Select(File.ReadAllText)
-                    .Select(ReplaceSymbols)
-                    .Select(GetWords);
+            wordLists = Directory
+                .EnumerateFiles(directoryPath, "*" + fileExtension, SearchOption.AllDirectories)
+                .Select(File.ReadAllText)
+                .Select(ReplaceSymbols)
+                .Select(GetWords); // calling only ".Select(GetWords)" leaves us with a " " entry in the wordLists
             //}
             //else
             //{
